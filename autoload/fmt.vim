@@ -11,7 +11,7 @@ endif
 " Below function is copied from vim-go's fmt.vim file.
 function! fmt#Format()
     if !executable("hclfmt")
-        echo "hclfmt: could not find hclfmt. Please install it from github.com/fatih/hclfmt"
+        echo "hclfmt: could not find hclfmt. Please install it with `go install github.com/hashicorp/hcl/v2/cmd/hclfmt@latest`"
         return ""
     endif
 
