@@ -36,6 +36,15 @@ plugin's install command.
 *  [Vundle](https://github.com/gmarik/vundle)
   * `Plugin 'ghthor/vim-hclfmt'`
 
+
 If [hclfmt](https://github.com/hashicorp/hcl/tree/main/cmd/hclfmt) is not already installed:
 
     go install github.com/hashicorp/hcl/v2/cmd/hclfmt@latest
+
+## See Also
+
+| Project | Link |
+| - | - |
+| pre-commit-hclfmt | [https://github.com/ghthor/pre-commit-hclfmt](https://github.com/ghthor/pre-commit-hclfmt) |
+| hcl | [https://github.com/hashicorp/hcl](https://github.com/hashicorp/hcl) |
+| hclfmt | [https://github.com/hashicorp/hcl/tree/main/cmd/hclfmt](https://github.com/hashicorp/hcl/tree/main/cmd/hclfmt) |
