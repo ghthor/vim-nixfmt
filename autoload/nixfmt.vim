@@ -19,13 +19,15 @@ function! nixfmt#Format()
     let l:curw=winsaveview()
 
     " Write current unsaved buffer to a temp file
-    let l:tmpname = tempname() . ".nix"
-    call writefile(getline(1, '$'), l:tmpname)
+    let l:fixed_name   = tempname() . ".nix"
+    let l:unfixed_name = tempname() . ".nix"
+    call writefile(getline(1, '$'), l:fixed_name)
+    call writefile(getline(1, '$'), l:unfixed_name)
 
     let fmt_command = "nix fmt"
 
     " populate the final command with user based fmt options
-    let command = fmt_command . " " . g:nix_fmt_options . " " . shellescape(l:tmpname)
+    let command = fmt_command . " " . g:nix_fmt_options . " " . shellescape(l:fixed_name)
 
     " execute our command...
     let out = system(command)
@@ -34,21 +36,21 @@ function! nixfmt#Format()
     "file (if this fails, we can always check the outputs first line with:
     "splitted =~ 'package \w\+')
     if v:shell_error == 0
-        " remove undo point caused via BufWritePre
-        try | silent undojoin | catch | endtry
-
-        " let out = system("diff -u " . expand('%:S') . " " . shellescape(l:tmpname))
-        " echo out
-
-        " Replace current file with temp file, then reload buffer
-        call rename(l:tmpname, expand('%'))
-        silent edit!
-        let &syntax = &syntax
+        let diffout = system("diff -u " . shellescape(l:unfixed_name) . " " . shellescape(l:fixed_name))
+        if v:shell_error == 1
+            " remove undo point caused via BufWritePre
+            try | silent undojoin | catch | endtry
+            " Replace current file with temp file, then reload buffer
+            call rename(l:fixed_name, expand('%'))
+            silent edit!
+            let &syntax = &syntax
+        endif
     elseif g:nix_fmt_fail_silently == 0
         echo out
-        " We didn't use the temp file, so clean up
-        call delete(l:tmpname)
     endif
+
+    call delete(l:fixed_name)
+    call delete(l:unfixed_name)
 
     " restore our cursor/windows positions
     call winrestview(l:curw)
