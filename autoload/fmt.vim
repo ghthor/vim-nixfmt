@@ -1,17 +1,17 @@
-" fmt.vim: Vim command to format HCL files with hclfmt.
+" fmt.vim: Vim command to format *.nix files with `nix fmt`.
 
-if !exists('g:hcl_fmt_fail_silently')
-    let g:hcl_fmt_fail_silently = 0
+if !exists('g:nix_fmt_fail_silently')
+    let g:nix_fmt_fail_silently = 0
 endif
 
-if !exists('g:hcl_fmt_options')
-    let g:hcl_fmt_options = ''
+if !exists('g:nix_fmt_options')
+    let g:nix_fmt_options = ''
 endif
 
-" Below function is copied from vim-go's fmt.vim file.
+" Below function is copied from vim-hclfmt's fmt.vim file.
 function! fmt#Format()
-    if !executable("hclfmt")
-        echo "hclfmt: could not find hclfmt. Please install it with `go install github.com/hashicorp/hcl/v2/cmd/hclfmt@latest`"
+    if !executable("nix")
+        echo "nixfmt: could not find nix command. Please install nix"
         return ""
     endif
 
@@ -22,10 +22,10 @@ function! fmt#Format()
     let l:tmpname = tempname()
     call writefile(getline(1, '$'), l:tmpname)
 
-    let fmt_command = "hclfmt"
+    let fmt_command = "nix fmt"
 
     " populate the final command with user based fmt options
-    let command = fmt_command . ' -w ' . g:hcl_fmt_options
+    let command = fmt_command . " " . g:nix_fmt_options
 
     " execute our command...
     let out = system(command . " " . l:tmpname)
@@ -41,7 +41,7 @@ function! fmt#Format()
         call rename(l:tmpname, expand('%'))
         silent edit!
         let &syntax = &syntax
-    elseif g:hcl_fmt_fail_silently == 0
+    elseif g:nix_fmt_fail_silently == 0
         echo out
         " We didn't use the temp file, so clean up
         call delete(l:tmpname)
